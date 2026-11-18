@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="Damper">
+  <rect width="1024" height="1024" fill="#0B1220"/>
+  <polyline points="130.0,559.5 215.0,249.5 310.0,774.5 405.0,424.5 500.0,629.5 595.0,529.5 680.0,559.5" fill="none" stroke="#F4F7FB" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="680.0" y1="559.5" x2="880.0" y2="559.5" stroke="#4FD1B5" stroke-width="30" stroke-linecap="round"/>
+  <circle cx="880.0" cy="559.5" r="28.5" fill="#4FD1B5"/>
+</svg>
