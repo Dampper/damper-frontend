@@ -3,8 +3,10 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
-  "env": {
-    "DAMPER_BASE": "/"
+  "build": {
+    "env": {
+      "DAMPER_BASE": "/"
+    }
   },
   "cleanUrls": true
 }
