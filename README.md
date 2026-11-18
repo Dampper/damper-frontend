@@ -1,4 +1,10 @@
-# Damper — frontend
+<p align="center">
+  <img src="https://raw.githubusercontent.com/UbsOrg/.github/main/profile/damper-wordmark.png" alt="Damper" width="420">
+</p>
+
+# Damper Frontend
+
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE) ![Status](https://img.shields.io/badge/status-design%20stage-lightgrey)
 
 Web dashboard for [Damper](https://github.com/UbsOrg/damper-contracts), a manipulation-resistant price oracle for Blend lending pools on Stellar.
 
