@@ -6,7 +6,7 @@
 
 [![CI](https://github.com/Dampper/damper-frontend/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Dampper/damper-frontend/actions/workflows/ci.yml) [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE) ![Network](https://img.shields.io/badge/network-Stellar%20mainnet%20(read--only)-informational)
 
-**Live:** [dampper.github.io/damper-frontend](https://dampper.github.io/damper-frontend/)
+**Live:** [damper-frontend.vercel.app](https://damper-frontend.vercel.app)
 
 Pool risk dashboard for [Damper](https://github.com/Dampper/damper-contracts). It shows which Blend lending pools on Stellar could be drained through a manipulated price, how cheaply, and where each reserve's price comes from. It reads mainnet data only and never asks for a wallet.
 
