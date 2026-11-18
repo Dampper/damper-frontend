@@ -7,7 +7,7 @@ import type { Report } from './types';
  */
 export const LIVE_URL =
   (import.meta.env.VITE_REPORT_URL as string | undefined) ??
-  'https://raw.githubusercontent.com/UbsOrg/damper-backend/reports/latest.json';
+  'https://raw.githubusercontent.com/Dampper/damper-backend/reports/latest.json';
 
 export const SNAPSHOT_URL = `${import.meta.env.BASE_URL}data/latest.json`;
 

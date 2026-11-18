@@ -1,6 +1,6 @@
 # Contributing to Damper Frontend
 
-Thanks for helping. This page covers setup, checks and what a pull request needs. For the shared rules (labels, commit messages, code of conduct) see the [organisation guide](https://github.com/UbsOrg/.github/blob/main/CONTRIBUTING.md).
+Thanks for helping. This page covers setup, checks and what a pull request needs. For the shared rules (labels, commit messages, code of conduct) see the [organisation guide](https://github.com/Dampper/.github/blob/main/CONTRIBUTING.md).
 
 ## Finding something to work on
 
@@ -22,7 +22,7 @@ npm run typecheck
 npm run build
 ```
 
-The app reads the scanner's published report and falls back to `public/data/latest.json`. To work on a new report field, change the scanner in [damper-backend](https://github.com/UbsOrg/damper-backend), then update `src/types.ts`, `src/report.ts` and the bundled snapshot together.
+The app reads the scanner's published report and falls back to `public/data/latest.json`. To work on a new report field, change the scanner in [damper-backend](https://github.com/Dampper/damper-backend), then update `src/types.ts`, `src/report.ts` and the bundled snapshot together.
 
 ## Making a change
 
@@ -46,4 +46,4 @@ Imperative subject under about 70 characters, then a body that says why.
 
 ## Security
 
-Do not open public issues for vulnerabilities. See [SECURITY.md](https://github.com/UbsOrg/.github/blob/main/SECURITY.md).
+Do not open public issues for vulnerabilities. See [SECURITY.md](https://github.com/Dampper/.github/blob/main/SECURITY.md).

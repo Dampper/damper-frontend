@@ -1,7 +1,7 @@
 import { TIER_MEANING, TIER_ORDER } from '../derive';
 import { TierBadge } from './TierBadge';
 
-const BACKEND = 'https://github.com/UbsOrg/damper-backend';
+const BACKEND = 'https://github.com/Dampper/damper-backend';
 
 export function MethodPage() {
   return (
@@ -98,7 +98,7 @@ export function MethodPage() {
         <p>
           The scanner is open source: <a href={BACKEND}>damper-backend</a>. The reasoning behind the scoring is in{' '}
           <a href={`${BACKEND}/blob/main/docs/adr/0002-score-by-capital-to-clear-the-book.md`}>decision record 0002</a>, and
-          the oracle that defends against these attacks is <a href="https://github.com/UbsOrg/damper-contracts">damper-contracts</a>.
+          the oracle that defends against these attacks is <a href="https://github.com/Dampper/damper-contracts">damper-contracts</a>.
         </p>
       </div>
     </div>

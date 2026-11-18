@@ -1,14 +1,14 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/UbsOrg/.github/main/profile/damper-wordmark.png" alt="Damper" width="420">
+  <img src="https://raw.githubusercontent.com/Dampper/.github/main/profile/damper-wordmark.png" alt="Damper" width="420">
 </p>
 
 # Damper Frontend
 
-[![CI](https://github.com/UbsOrg/damper-frontend/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/UbsOrg/damper-frontend/actions/workflows/ci.yml) [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE) ![Network](https://img.shields.io/badge/network-Stellar%20mainnet%20(read--only)-informational)
+[![CI](https://github.com/Dampper/damper-frontend/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Dampper/damper-frontend/actions/workflows/ci.yml) [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE) ![Network](https://img.shields.io/badge/network-Stellar%20mainnet%20(read--only)-informational)
 
-**Live:** [ubsorg.github.io/damper-frontend](https://ubsorg.github.io/damper-frontend/)
+**Live:** [dampper.github.io/damper-frontend](https://dampper.github.io/damper-frontend/)
 
-Pool risk dashboard for [Damper](https://github.com/UbsOrg/damper-contracts). It shows which Blend lending pools on Stellar could be drained through a manipulated price, how cheaply, and where each reserve's price comes from. It reads mainnet data only and never asks for a wallet.
+Pool risk dashboard for [Damper](https://github.com/Dampper/damper-contracts). It shows which Blend lending pools on Stellar could be drained through a manipulated price, how cheaply, and where each reserve's price comes from. It reads mainnet data only and never asks for a wallet.
 
 More documentation:
 
@@ -22,11 +22,11 @@ More documentation:
 - **A pool.** Its reserves and price sources, then two charts: if a collateral asset's price were pushed up, and if a borrowed asset's price were pushed down. Each is a dot plot on a logarithmic dollar axis comparing *the capital needed to move the price 10×* with *what could be borrowed once it moved*. Every chart has a table twin.
 - **Method.** What the numbers mean and what they leave out.
 
-Tiers come from the scanner in [damper-backend](https://github.com/UbsOrg/damper-backend); the reasoning is in its [decision record 0002](https://github.com/UbsOrg/damper-backend/blob/main/docs/adr/0002-score-by-capital-to-clear-the-book.md).
+Tiers come from the scanner in [damper-backend](https://github.com/Dampper/damper-backend); the reasoning is in its [decision record 0002](https://github.com/Dampper/damper-backend/blob/main/docs/adr/0002-score-by-capital-to-clear-the-book.md).
 
 ## Data
 
-The page reads `https://raw.githubusercontent.com/UbsOrg/damper-backend/reports/latest.json`, which a scheduled workflow in damper-backend refreshes every 6 hours. If that cannot be read or does not match the expected format, it falls back to a snapshot bundled with the build and says so in a banner. Set `VITE_REPORT_URL` to point at another report.
+The page reads `https://raw.githubusercontent.com/Dampper/damper-backend/reports/latest.json`, which a scheduled workflow in damper-backend refreshes every 6 hours. If that cannot be read or does not match the expected format, it falls back to a snapshot bundled with the build and says so in a banner. Set `VITE_REPORT_URL` to point at another report.
 
 ## Develop
 

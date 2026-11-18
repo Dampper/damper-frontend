@@ -101,9 +101,9 @@ export function App() {
         )}
         <p>
           Damper is unaudited and these figures are estimates from public data, not advice. Source:{' '}
-          <a href="https://github.com/UbsOrg/damper-frontend">damper-frontend</a> ·{' '}
-          <a href="https://github.com/UbsOrg/damper-backend">damper-backend</a> ·{' '}
-          <a href="https://github.com/UbsOrg/damper-contracts">damper-contracts</a>
+          <a href="https://github.com/Dampper/damper-frontend">damper-frontend</a> ·{' '}
+          <a href="https://github.com/Dampper/damper-backend">damper-backend</a> ·{' '}
+          <a href="https://github.com/Dampper/damper-contracts">damper-contracts</a>
         </p>
       </footer>
     </div>
