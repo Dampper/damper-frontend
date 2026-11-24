@@ -599,6 +599,43 @@ details.table-view .table-wrap {
   color: var(--text-primary);
 }
 
+/* ------------------------------------------------------------ alerts */
+
+.alerts {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+.alerts li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--text-secondary);
+}
+.alerts li svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  margin-top: 2px;
+}
+.alerts li[data-severity='critical'] svg {
+  color: var(--tier-critical);
+}
+.alerts li[data-severity='warn'] svg {
+  color: var(--tier-medium);
+}
+.alerts li[data-severity='info'] svg {
+  color: var(--tier-off);
+}
+.chip[data-severity='critical'] {
+  border-color: var(--tier-critical);
+}
+.chip[data-severity='warn'] {
+  border-color: var(--tier-medium);
+}
+
 /* ------------------------------------------------------------ method */
 
 .prose {

@@ -5,6 +5,7 @@ import { href, useRoute } from './router';
 import { useTheme } from './theme';
 import { Mark } from './components/icons';
 import { MethodPage } from './components/MethodPage';
+import { OracleStatusPage } from './components/OracleStatusPage';
 import { PoolPage } from './components/PoolPage';
 import { PoolsPage } from './components/PoolsPage';
 
@@ -28,7 +29,7 @@ export function App() {
     return () => ctl.abort();
   }, []);
 
-  const current = route.page === 'method' ? 'method' : 'pools';
+  const current = route.page === 'method' || route.page === 'status' ? route.page : 'pools';
 
   return (
     <div className="shell">
@@ -44,6 +45,9 @@ export function App() {
           <a href={href.method()} aria-current={current === 'method' ? 'page' : undefined}>
             Method
           </a>
+          <a href={href.status()} aria-current={current === 'status' ? 'page' : undefined}>
+            Oracle status
+          </a>
         </nav>
         <button type="button" className="ghost" onClick={cycleTheme}>
           {THEME_LABEL[theme]}
@@ -53,6 +57,8 @@ export function App() {
       <main>
         {route.page === 'method' ? (
           <MethodPage />
+        ) : route.page === 'status' ? (
+          <OracleStatusPage />
         ) : state.status === 'loading' ? (
           <p className="state" role="status">
             Loading the latest scan…

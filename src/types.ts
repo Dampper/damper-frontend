@@ -70,3 +70,47 @@ export interface Report {
   pools: Pool[];
   errors: { pool: string; error: string }[];
 }
+
+/**
+ * The keeper's oracle status report (damper-backend `src/keeper/status.ts`), published
+ * alongside its hold-state. Prices, costs and exposures are the oracle's fixed-point i128
+ * values as decimal-string bigints: `decimals` says how many places are fractional.
+ */
+export interface Rate {
+  upBpsPerHour: number;
+  downBpsPerHour: number;
+  windowSecs: number;
+}
+
+export interface Gate {
+  tightUpBpsPerHour: number;
+  tightDownBpsPerHour: number;
+  minCostRatioBps: number;
+  maxEvidenceAge: number;
+}
+
+export interface Alert {
+  severity: 'critical' | 'warn' | 'info';
+  code: string;
+  message: string;
+}
+
+export interface AssetStatus {
+  asset: string;
+  decimals: number | undefined;
+  policy: Rate | undefined;
+  effectivePolicy: Rate | undefined;
+  gate: Gate | undefined;
+  anchor: { price: bigint; timestamp: number } | undefined;
+  raw: bigint | undefined;
+  quote: bigint | undefined;
+  evidence: { upCost: bigint; upExposure: bigint; downCost: bigint; downExposure: bigint; timestamp: number } | undefined;
+  alerts: Alert[];
+}
+
+export interface OracleStatus {
+  at: number;
+  network: string;
+  oracle: string;
+  assets: AssetStatus[];
+}

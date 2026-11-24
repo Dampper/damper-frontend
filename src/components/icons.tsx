@@ -65,3 +65,31 @@ export function TierIcon({ tier }: { tier: Tier }) {
       );
   }
 }
+
+/** One glyph per alert severity, so it never rests on colour alone. */
+export function SeverityIcon({ severity }: { severity: 'critical' | 'warn' | 'info' }) {
+  const common = { viewBox: '0 0 16 16', 'aria-hidden': true, fill: 'none', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round' } as const;
+  switch (severity) {
+    case 'critical':
+      return (
+        <svg {...common}>
+          <path d="M5.2 1.8h5.6l3.4 3.4v5.6l-3.4 3.4H5.2L1.8 10.8V5.2z" fill="currentColor" fillOpacity="0.18" />
+          <path d="M8 4.8v3.9M8 11v.1" />
+        </svg>
+      );
+    case 'warn':
+      return (
+        <svg {...common}>
+          <path d="M8 2 14.5 13.5h-13z" fill="currentColor" fillOpacity="0.18" />
+          <path d="M8 6.6v3.2M8 11.9v.1" />
+        </svg>
+      );
+    default:
+      return (
+        <svg {...common}>
+          <circle cx="8" cy="8" r="6.2" fill="currentColor" fillOpacity="0.18" />
+          <path d="M8 7.2v3.4M8 5v.1" />
+        </svg>
+      );
+  }
+}

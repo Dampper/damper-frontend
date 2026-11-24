@@ -11,7 +11,7 @@ export function usd(n: number | undefined): string {
   return `${sign}$${a.toFixed(2)}`;
 }
 
-function trim(n: number, digits: number): string {
+export function trim(n: number, digits: number): string {
   const s = n.toFixed(digits);
   return s.includes('.') ? s.replace(/\.?0+$/, '') : s;
 }

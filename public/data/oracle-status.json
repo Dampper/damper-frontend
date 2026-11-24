@@ -1,0 +1,52 @@
+{
+  "at": 1795483140,
+  "network": "testnet",
+  "oracle": "CCBCV5NCMEDCW4WPWF45P36JXZ7VV3QJR5T4X3CICJPGRYRDXKH636GQ",
+  "assets": [
+    {
+      "asset": "Stellar:CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC",
+      "decimals": 7,
+      "policy": {
+        "upBpsPerHour": 1500,
+        "downBpsPerHour": 4294967295,
+        "windowSecs": 86400
+      },
+      "effectivePolicy": {
+        "upBpsPerHour": 1500,
+        "downBpsPerHour": 4294967295,
+        "windowSecs": 86400
+      },
+      "gate": {
+        "tightUpBpsPerHour": 150,
+        "tightDownBpsPerHour": 4294967295,
+        "minCostRatioBps": 100000,
+        "maxEvidenceAge": 3600
+      },
+      "anchor": {
+        "price": "10600000",
+        "timestamp": 1795482037
+      },
+      "raw": "1067400000",
+      "quote": "11085833",
+      "evidence": {
+        "upCost": "4035000000",
+        "upExposure": "300000000",
+        "downCost": "3025000000",
+        "downExposure": "300000000",
+        "timestamp": 1795482182
+      },
+      "alerts": [
+        {
+          "severity": "warn",
+          "code": "clamp-binding",
+          "message": "upstreams say 1067400000 but pools read 11085833 (96.285x): a real move being rate-limited, or manipulation"
+        },
+        {
+          "severity": "critical",
+          "code": "suspicious-move",
+          "message": "raw price is 100.70x the anchor; holding pokes (0 of 360 min)"
+        }
+      ]
+    }
+  ]
+}

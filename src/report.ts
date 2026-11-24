@@ -9,25 +9,25 @@ export class ReportError extends Error {
 const TIERS: Tier[] = ['critical', 'high', 'medium', 'low', 'external', 'n/a'];
 const KINDS: UpstreamKind[] = ['reflector-dex', 'reflector-cex', 'operator-feed', 'unknown'];
 
-type Rec = Record<string, unknown>;
+export type Rec = Record<string, unknown>;
 const isRec = (v: unknown): v is Rec => typeof v === 'object' && v !== null && !Array.isArray(v);
 
-function str(o: Rec, k: string, path: string): string {
+export function str(o: Rec, k: string, path: string): string {
   const v = o[k];
   if (typeof v !== 'string') throw new ReportError(`${path}.${k}`, 'a string');
   return v;
 }
-function num(o: Rec, k: string, path: string): number {
+export function num(o: Rec, k: string, path: string): number {
   const v = o[k];
   if (typeof v !== 'number' || !Number.isFinite(v)) throw new ReportError(`${path}.${k}`, 'a number');
   return v;
 }
-function optNum(o: Rec, k: string, path: string): number | undefined {
+export function optNum(o: Rec, k: string, path: string): number | undefined {
   const v = o[k];
   if (v === undefined || v === null) return undefined;
   return num(o, k, path);
 }
-function bool(o: Rec, k: string, path: string): boolean {
+export function bool(o: Rec, k: string, path: string): boolean {
   const v = o[k];
   if (typeof v !== 'boolean') throw new ReportError(`${path}.${k}`, 'a boolean');
   return v;
@@ -37,13 +37,24 @@ function tier(o: Rec, k: string, path: string): Tier {
   if (typeof v !== 'string' || !TIERS.includes(v as Tier)) throw new ReportError(`${path}.${k}`, `one of ${TIERS.join(', ')}`);
   return v as Tier;
 }
-function rec(v: unknown, path: string): Rec {
+export function rec(v: unknown, path: string): Rec {
   if (!isRec(v)) throw new ReportError(path, 'an object');
   return v;
 }
-function arr(v: unknown, path: string): unknown[] {
+export function arr(v: unknown, path: string): unknown[] {
   if (!Array.isArray(v)) throw new ReportError(path, 'an array');
   return v;
+}
+/** A big (possibly 128-bit) integer the oracle sent as a decimal string, e.g. an i128 price. */
+export function bigStr(o: Rec, k: string, path: string): bigint {
+  const v = o[k];
+  if (typeof v !== 'string' || !/^-?\d+$/.test(v)) throw new ReportError(`${path}.${k}`, 'a decimal integer string');
+  return BigInt(v);
+}
+export function optBigStr(o: Rec, k: string, path: string): bigint | undefined {
+  const v = o[k];
+  if (v === undefined || v === null) return undefined;
+  return bigStr(o, k, path);
 }
 
 function parseSource(v: unknown, path: string): PriceSource {

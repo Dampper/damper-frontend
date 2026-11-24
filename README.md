@@ -21,12 +21,13 @@ More documentation:
 - **Pools.** Every scanned pool: status, supplied, borrowed, where its prices come from, and its highest risk tier. Filter to the pools that allow borrowing. A "what stands out" list groups patterns the pools cannot see for themselves: prices set by one admin key, a deviation check switched off, collateral at a fixed price.
 - **A pool.** Its reserves and price sources, then two charts: if a collateral asset's price were pushed up, and if a borrowed asset's price were pushed down. Each is a dot plot on a logarithmic dollar axis comparing *the capital needed to move the price 10×* with *what could be borrowed once it moved*. Every chart has a table twin.
 - **Method.** What the numbers mean and what they leave out.
+- **Oracle status.** For a Damper guarded oracle: each asset's raw price before any clamp, the quote a pool actually reads, the anchor and its age, the policy rate against what is actually in force right now, the gate's latest published evidence, and the keeper's alerts from its last pass. See [decision record 0004](docs/adr/0004-oracle-status-page.md).
 
 Tiers come from the scanner in [damper-backend](https://github.com/Dampper/damper-backend); the reasoning is in its [decision record 0002](https://github.com/Dampper/damper-backend/blob/main/docs/adr/0002-score-by-capital-to-clear-the-book.md).
 
 ## Data
 
-The page reads `https://raw.githubusercontent.com/Dampper/damper-backend/reports/latest.json`, which a scheduled workflow in damper-backend refreshes every 6 hours. If that cannot be read or does not match the expected format, it falls back to a snapshot bundled with the build and says so in a banner. Set `VITE_REPORT_URL` to point at another report.
+The page reads `https://raw.githubusercontent.com/Dampper/damper-backend/reports/latest.json`, which a scheduled workflow in damper-backend refreshes every 6 hours. The oracle status page separately reads `https://raw.githubusercontent.com/Dampper/damper-backend/keeper-state/oracle-status.json`, published after every keeper pass (about every 5 minutes). Either can fail independently; each falls back to its own snapshot bundled with the build and says so in a banner. Set `VITE_REPORT_URL` or `VITE_STATUS_URL` to point at another report.
 
 ## Develop
 
@@ -34,7 +35,7 @@ Node 20 or newer.
 
 ```sh
 npm install
-npm run dev          # http://localhost:5173/damper-frontend/
+npm run dev          # http://localhost:5173/
 npm test             # parsing, formatting, chart scale, and page rendering
 npm run typecheck
 npm run build        # DAMPER_BASE=/ for a host that serves from the root

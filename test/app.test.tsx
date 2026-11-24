@@ -6,12 +6,19 @@ import { logDomain, xOf } from '../src/components/CostChart';
 import { parseHash } from '../src/router';
 
 const snapshot = readFileSync('public/data/latest.json', 'utf8');
+const statusSnapshot = readFileSync('public/data/oracle-status.json', 'utf8');
 
 function mockFetch(live: 'ok' | '404' | 'bad-json') {
   vi.stubGlobal(
     'fetch',
     vi.fn(async (url: string) => {
-      const isLive = String(url).includes('raw.githubusercontent.com');
+      const u = String(url);
+      const isLive = u.includes('raw.githubusercontent.com');
+      if (u.includes('oracle-status')) {
+        if (isLive && live === '404') return new Response('nope', { status: 404 });
+        if (isLive && live === 'bad-json') return new Response('{"assets": 3}', { status: 200 });
+        return new Response(statusSnapshot, { status: 200 });
+      }
       if (isLive && live === '404') return new Response('nope', { status: 404 });
       if (isLive && live === 'bad-json') return new Response('{"pools": 3}', { status: 200 });
       return new Response(snapshot, { status: 200 });
@@ -107,6 +114,26 @@ describe('App', () => {
     expect(await screen.findByRole('heading', { name: 'How it is measured' })).toBeTruthy();
   });
 
+  it('shows the oracle status page with the live report', async () => {
+    mockFetch('ok');
+    window.location.hash = '#/status';
+    render(<App />);
+    const main = await screen.findByRole('main');
+    expect(await within(main).findByRole('heading', { name: 'Oracle status' })).toBeTruthy();
+    expect(within(main).getByText(/live report/)).toBeTruthy();
+    expect(within(main).queryByText(/bundled with this build/)).toBeNull();
+  });
+
+  it('falls back to the bundled status snapshot and says why', async () => {
+    mockFetch('404');
+    window.location.hash = '#/status';
+    render(<App />);
+    const main = await screen.findByRole('main');
+    expect(await within(main).findByRole('heading', { name: 'Oracle status' })).toBeTruthy();
+    expect(await within(main).findByText(/status bundled with this build/)).toBeTruthy();
+    expect(within(main).getByText(/answered 404/)).toBeTruthy();
+  });
+
   it('cycles the theme and writes it to the document', async () => {
     mockFetch('ok');
     render(<App />);
@@ -125,6 +152,7 @@ describe('routing', () => {
     expect(parseHash('')).toEqual({ page: 'pools' });
     expect(parseHash('#/')).toEqual({ page: 'pools' });
     expect(parseHash('#/method')).toEqual({ page: 'method' });
+    expect(parseHash('#/status')).toEqual({ page: 'status' });
     expect(parseHash('#/pool/CABC123')).toEqual({ page: 'pool', id: 'CABC123' });
     expect(parseHash('#/pool/not valid')).toEqual({ page: 'pools' });
     expect(parseHash('#/elsewhere')).toEqual({ page: 'pools' });

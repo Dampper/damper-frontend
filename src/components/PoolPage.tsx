@@ -1,43 +1,12 @@
-import { useState } from 'react';
 import { plotRows } from '../derive';
 import { percent, price, shortId, usd } from '../format';
 import { href } from '../router';
 import type { Pool } from '../types';
+import { CopyId } from './CopyId';
 import { CostChart } from './CostChart';
 import { Kpi } from './Kpi';
 import { TierBadge } from './TierBadge';
 import { deviationGuard, sourceLabel } from './source';
-
-const EXPLORER = 'https://stellar.expert/explorer/public/contract/';
-
-function CopyId({ id }: { id: string }) {
-  const [done, setDone] = useState(false);
-  return (
-    <span>
-      <span className="mono" title={id}>
-        {shortId(id)}
-      </span>
-      <button
-        type="button"
-        className="copy"
-        onClick={() => {
-          navigator.clipboard?.writeText(id).then(
-            () => {
-              setDone(true);
-              setTimeout(() => setDone(false), 1500);
-            },
-            () => undefined,
-          );
-        }}
-      >
-        {done ? 'Copied' : 'Copy'}
-      </button>
-      <a href={`${EXPLORER}${id}`} target="_blank" rel="noreferrer noopener">
-        Explorer
-      </a>
-    </span>
-  );
-}
 
 export function PoolPage({ pool }: { pool: Pool }) {
   const util = pool.supplyUsd > 0 ? pool.borrowedUsd / pool.supplyUsd : 0;

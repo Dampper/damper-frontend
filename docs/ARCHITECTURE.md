@@ -16,12 +16,16 @@ A static single-page app. There is no server: it reads one JSON file, validates 
 | File | Role |
 | --- | --- |
 | [`src/types.ts`](../src/types.ts) | The scanner's report format, mirrored by hand from damper-backend |
-| [`src/report.ts`](../src/report.ts) | `parseReport`: validates the JSON and names the first wrong field, so a format change fails loudly |
+| [`src/report.ts`](../src/report.ts) | `parseReport`: validates the JSON and names the first wrong field, so a format change fails loudly; exports the small parsing helpers `oracleStatus.ts` reuses |
 | [`src/data.ts`](../src/data.ts) | Live report first, bundled snapshot second; an abort is never mistaken for a fallback |
 | [`src/derive.ts`](../src/derive.ts) | Summary figures, tiers, what to plot per reserve and why a row has no dots, the "what stands out" findings |
 | [`src/format.ts`](../src/format.ts) | Dollar, multiple, price and age formatting |
 | [`src/components/CostChart.tsx`](../src/components/CostChart.tsx) | The dot plot on a log axis, with hover, keyboard focus and a table twin |
 | [`src/router.ts`](../src/router.ts) | Hash routing, so any static host works |
+| [`src/oracleStatus.ts`](../src/oracleStatus.ts) | `parseOracleStatus`: validates the keeper's status report; amounts parse as `bigint`, not `number`, since they are i128 on the contract |
+| [`src/statusData.ts`](../src/statusData.ts) | Live status report first, bundled snapshot second, same shape as `data.ts` but a separate fetch |
+| [`src/oracleDerive.ts`](../src/oracleDerive.ts) | Rate and cost-ratio formatting, anchor and evidence age, whether the gate has tightened a rate right now |
+| [`src/components/OracleStatusPage.tsx`](../src/components/OracleStatusPage.tsx) | The `#/status` page: raw price, quote, anchor, policy versus what is in force, gate evidence and alerts, per asset (ADR 0004) |
 
 Pure logic (parsing, formatting, derivation, the chart's scale) is separate from rendering and is tested without a browser. Pages are tested with the bundled snapshot as the fixture.
 
