@@ -716,6 +716,17 @@ details.table-view .table-wrap {
   }
 }
 
+.search {
+  font: inherit;
+  min-width: 0;
+  width: 14rem;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+}
+
 th button.sort {
   all: unset;
   display: inline-flex;

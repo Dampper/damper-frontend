@@ -20,8 +20,10 @@ import { sourceLabels } from './source';
 export function PoolsPage({ report }: { report: Report }) {
   const [filter, setFilter] = useState<Filter>('all');
   const [sort, setSort] = useState<Sort>(DEFAULT_SORT);
+  const [query, setQuery] = useState('');
   const sum = summarise(report);
-  const pools = visiblePools(report, filter, sort);
+  const pools = visiblePools(report, filter, sort, query);
+  const searching = query.trim() !== '';
   const notable = findings(report);
 
   return (
@@ -54,6 +56,14 @@ export function PoolsPage({ report }: { report: Report }) {
       <div className="card">
         <div className="filters">
           <h2 style={{ marginRight: 'auto' }}>Pools</h2>
+          <input
+            type="search"
+            className="search"
+            aria-label="Search pools by name or asset"
+            placeholder="Search name or asset"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
           <div className="segmented" role="group" aria-label="Which pools to show">
             <button type="button" aria-pressed={filter === 'all'} onClick={() => setFilter('all')}>
               All ({report.pools.length})
@@ -66,7 +76,9 @@ export function PoolsPage({ report }: { report: Report }) {
 
         {pools.length === 0 ? (
           <p className="muted" style={{ padding: '16px 0' }}>
-            No pool allows borrowing right now.
+            {searching
+              ? `No pool matches \u201c${query.trim()}\u201d${filter === 'open' ? ' among those open for borrowing' : ''}.`
+              : 'No pool allows borrowing right now.'}
           </p>
         ) : (
           <div className="table-wrap">

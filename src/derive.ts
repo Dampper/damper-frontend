@@ -90,9 +90,18 @@ function compare(a: Pool, b: Pool, key: SortKey): number {
   }
 }
 
-/** Pools to list: the borrowing filter, then the chosen sort. Ties fall back to name, then id. */
-export function visiblePools(report: Report, filter: Filter, sort: Sort = DEFAULT_SORT): Pool[] {
-  const pools = filter === 'open' ? report.pools.filter((p) => p.borrowingOpen) : report.pools;
+/** True when the pool's name or any of its reserve symbols contains the query (case-insensitive). */
+export function matchesQuery(pool: Pool, query: string): boolean {
+  const q = query.trim().toLowerCase();
+  if (q === '') return true;
+  return pool.name.toLowerCase().includes(q) || pool.reserves.some((r) => r.symbol.toLowerCase().includes(q));
+}
+
+/** Pools to list: the borrowing filter and the search apply together, then the chosen sort. Ties fall back to name, then id. */
+export function visiblePools(report: Report, filter: Filter, sort: Sort = DEFAULT_SORT, query = ''): Pool[] {
+  const pools = (filter === 'open' ? report.pools.filter((p) => p.borrowingOpen) : report.pools).filter((p) =>
+    matchesQuery(p, query),
+  );
   const sign = sort.dir === 'asc' ? 1 : -1;
   return [...pools].sort(
     (a, b) => sign * compare(a, b, sort.key) || a.name.localeCompare(b.name) || a.id.localeCompare(b.id),
