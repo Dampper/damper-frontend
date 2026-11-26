@@ -54,9 +54,49 @@ export function summarise(report: Report): Summary {
 
 export type Filter = 'all' | 'open';
 
-export function visiblePools(report: Report, filter: Filter): Pool[] {
+export type SortKey = 'name' | 'status' | 'supply' | 'borrowed' | 'tier';
+export type SortDir = 'asc' | 'desc';
+export interface Sort {
+  key: SortKey;
+  dir: SortDir;
+}
+
+/** The order the table has always had: biggest pool first. */
+export const DEFAULT_SORT: Sort = { key: 'supply', dir: 'desc' };
+
+/** Text and tier columns start ascending (A first, most severe first); amounts start with the largest. */
+export function defaultDir(key: SortKey): SortDir {
+  return key === 'supply' || key === 'borrowed' ? 'desc' : 'asc';
+}
+
+/** What a click on a column header does: flip the active column, or switch to a new one. */
+export function nextSort(current: Sort, key: SortKey): Sort {
+  if (current.key !== key) return { key, dir: defaultDir(key) };
+  return { key, dir: current.dir === 'asc' ? 'desc' : 'asc' };
+}
+
+function compare(a: Pool, b: Pool, key: SortKey): number {
+  switch (key) {
+    case 'name':
+      return a.name.localeCompare(b.name, 'en', { sensitivity: 'base' });
+    case 'status':
+      return a.status.localeCompare(b.status, 'en', { sensitivity: 'base' });
+    case 'supply':
+      return a.supplyUsd - b.supplyUsd;
+    case 'borrowed':
+      return a.borrowedUsd - b.borrowedUsd;
+    case 'tier':
+      return tierRank(a.tier) - tierRank(b.tier);
+  }
+}
+
+/** Pools to list: the borrowing filter, then the chosen sort. Ties fall back to name, then id. */
+export function visiblePools(report: Report, filter: Filter, sort: Sort = DEFAULT_SORT): Pool[] {
   const pools = filter === 'open' ? report.pools.filter((p) => p.borrowingOpen) : report.pools;
-  return [...pools].sort((a, b) => b.supplyUsd - a.supplyUsd);
+  const sign = sort.dir === 'asc' ? 1 : -1;
+  return [...pools].sort(
+    (a, b) => sign * compare(a, b, sort.key) || a.name.localeCompare(b.name) || a.id.localeCompare(b.id),
+  );
 }
 
 /** exposure / cost, when both exist and cost is positive. */

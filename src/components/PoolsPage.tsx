@@ -1,5 +1,15 @@
 import { useState } from 'react';
-import { TIER_LABEL, findings, summarise, visiblePools, type Filter } from '../derive';
+import {
+  DEFAULT_SORT,
+  TIER_LABEL,
+  findings,
+  nextSort,
+  summarise,
+  visiblePools,
+  type Filter,
+  type Sort,
+  type SortKey,
+} from '../derive';
 import { usd } from '../format';
 import { href } from '../router';
 import type { Report } from '../types';
@@ -9,8 +19,9 @@ import { sourceLabels } from './source';
 
 export function PoolsPage({ report }: { report: Report }) {
   const [filter, setFilter] = useState<Filter>('all');
+  const [sort, setSort] = useState<Sort>(DEFAULT_SORT);
   const sum = summarise(report);
-  const pools = visiblePools(report, filter);
+  const pools = visiblePools(report, filter, sort);
   const notable = findings(report);
 
   return (
@@ -62,12 +73,12 @@ export function PoolsPage({ report }: { report: Report }) {
             <table>
               <thead>
                 <tr>
-                  <th>Pool</th>
-                  <th>Status</th>
-                  <th className="r">Supplied</th>
-                  <th className="r">Borrowed</th>
+                  <SortHeader label="Pool" column="name" sort={sort} onSort={setSort} />
+                  <SortHeader label="Status" column="status" sort={sort} onSort={setSort} />
+                  <SortHeader label="Supplied" column="supply" sort={sort} onSort={setSort} className="r" />
+                  <SortHeader label="Borrowed" column="borrowed" sort={sort} onSort={setSort} className="r" />
                   <th className="hide-sm">Price sources</th>
-                  <th>Highest tier</th>
+                  <SortHeader label="Highest tier" column="tier" sort={sort} onSort={setSort} />
                 </tr>
               </thead>
               <tbody>
@@ -152,5 +163,32 @@ export function PoolsPage({ report }: { report: Report }) {
         </details>
       )}
     </div>
+  );
+}
+
+/** A column header that sorts by its column; `aria-sort` marks the active one. The button makes it work from the keyboard. */
+function SortHeader({
+  label,
+  column,
+  sort,
+  onSort,
+  className,
+}: {
+  label: string;
+  column: SortKey;
+  sort: Sort;
+  onSort: (next: Sort) => void;
+  className?: string;
+}) {
+  const active = sort.key === column;
+  return (
+    <th className={className} aria-sort={active ? (sort.dir === 'asc' ? 'ascending' : 'descending') : undefined}>
+      <button type="button" className="sort" onClick={() => onSort(nextSort(sort, column))}>
+        {label}
+        <span aria-hidden="true" className="sort-mark">
+          {active ? (sort.dir === 'asc' ? '▲' : '▼') : ''}
+        </span>
+      </button>
+    </th>
   );
 }
