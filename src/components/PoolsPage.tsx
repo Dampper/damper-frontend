@@ -1,26 +1,17 @@
-import { useState } from 'react';
-import {
-  DEFAULT_SORT,
-  TIER_LABEL,
-  findings,
-  nextSort,
-  summarise,
-  visiblePools,
-  type Filter,
-  type Sort,
-  type SortKey,
-} from '../derive';
+import { TIER_LABEL, findings, summarise, visiblePools, type Filter } from '../derive';
 import { usd } from '../format';
-import { href } from '../router';
+import { href, navigate, useRoute } from '../router';
 import type { Report } from '../types';
 import { Kpi } from './Kpi';
 import { TierBadge } from './TierBadge';
 import { sourceLabels } from './source';
 
 export function PoolsPage({ report }: { report: Report }) {
-  const [filter, setFilter] = useState<Filter>('all');
-  const [sort, setSort] = useState<Sort>(DEFAULT_SORT);
-  const [query, setQuery] = useState('');
+  const route = useRoute();
+  // Reached only while on the pools page (App renders PoolsPage for that route alone), but
+  // the type is the general Route, so fall back to 'all' for the other variants.
+  const filter: Filter = route.page === 'pools' ? route.filter : 'all';
+  const setFilter = (next: Filter) => navigate(href.pools(next));
   const sum = summarise(report);
   const pools = visiblePools(report, filter, sort, query);
   const searching = query.trim() !== '';

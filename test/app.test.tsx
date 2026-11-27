@@ -84,6 +84,25 @@ describe('App', () => {
     expect(screen.getByRole('button', { name: /Borrowing open/ }).getAttribute('aria-pressed')).toBe('true');
   });
 
+  it('puts the filter in the URL and keeps it across a reload (#7)', async () => {
+    mockFetch('ok');
+    render(<App />);
+    await screen.findByRole('heading', { name: 'Pool risk' });
+
+    fireEvent.click(screen.getByRole('button', { name: /Borrowing open/ }));
+    expect(window.location.hash).toBe('#/?filter=open');
+
+    cleanup();
+    // A fresh mount from that same hash, the way a page reload (or a shared link) would start.
+    render(<App />);
+    await screen.findByRole('heading', { name: 'Pool risk' });
+    expect(screen.getByRole('button', { name: /Borrowing open/ }).getAttribute('aria-pressed')).toBe('true');
+    expect(screen.getByRole('button', { name: /^All/ }).getAttribute('aria-pressed')).toBe('false');
+
+    fireEvent.click(screen.getByRole('button', { name: /^All/ }));
+    expect(window.location.hash).toBe('#/');
+  });
+
   it('opens a pool from the hash and lists its reserves and both charts', async () => {
     mockFetch('ok');
     const id = JSON.parse(snapshot).pools.find((p: { name: string }) => p.name === 'YieldBlox').id;

@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { ago, dateTime, price, usd } from '../format';
-import { anchorAgeSecs, costRatioLabel, evidenceAgeSecs, fixedToNumber, isTightened, rateSummary } from '../oracleDerive';
+import { anchorAgeSecs, costRatioLabel, evidenceAgeSecs, fixedToNumber, isStatusStale, isTightened, rateSummary } from '../oracleDerive';
 import { loadStatus, type LoadedStatus } from '../statusData';
 import type { AssetStatus, OracleStatus } from '../types';
 import { AlertList } from './AlertList';
 import { CopyId } from './CopyId';
+import { GlossaryTerm } from './GlossaryTerm';
 
 type State = { phase: 'loading' } | { phase: 'error'; message: string } | { phase: 'ready'; data: LoadedStatus };
 
@@ -34,17 +35,23 @@ function AssetCard({ asset, network, now }: { asset: AssetStatus; network: strin
 
       <div className="kpis three">
         <div className="kpi">
-          <div className="label">Raw median</div>
+          <div className="label">
+            <GlossaryTerm term="raw">Raw median</GlossaryTerm>
+          </div>
           <div className="value num">{price(fixedToNumber(asset.raw, decimals))}</div>
           <div className="sub">before any clamp</div>
         </div>
         <div className="kpi">
-          <div className="label">Quote</div>
+          <div className="label">
+            <GlossaryTerm term="quote">Quote</GlossaryTerm>
+          </div>
           <div className="value num">{price(fixedToNumber(asset.quote, decimals))}</div>
           <div className="sub">what a pool reads from lastprice</div>
         </div>
         <div className="kpi">
-          <div className="label">Anchor</div>
+          <div className="label">
+            <GlossaryTerm term="anchor">Anchor</GlossaryTerm>
+          </div>
           <div className="value num">{price(fixedToNumber(asset.anchor?.price, decimals))}</div>
           <div className="sub">{anchorAge === undefined ? 'not seeded' : `moved ${ago(toIso(asset.anchor!.timestamp))}`}</div>
         </div>
@@ -55,14 +62,22 @@ function AssetCard({ asset, network, now }: { asset: AssetStatus; network: strin
           <thead>
             <tr>
               <th>Rate</th>
-              <th className="r">Policy</th>
+              <th className="r">
+                <GlossaryTerm term="policy-rate">Policy</GlossaryTerm>
+              </th>
               <th className="r">In force now</th>
-              {asset.gate && <th className="r hide-sm">Tight rate</th>}
+              {asset.gate && (
+                <th className="r hide-sm">
+                  <GlossaryTerm term="tight-rate">Tight rate</GlossaryTerm>
+                </th>
+              )}
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Clamp</td>
+              <td>
+                <GlossaryTerm term="clamp">Clamp</GlossaryTerm>
+              </td>
               <td className="r">{rateSummary(asset.policy)}</td>
               <td className="r">{rateSummary(asset.effectivePolicy)}</td>
               {asset.gate && (
@@ -77,13 +92,15 @@ function AssetCard({ asset, network, now }: { asset: AssetStatus; network: strin
 
       {asset.gate && (
         <p className="lede">
-          Cost gate: keeps the policy rate while fresh evidence says moving the price costs at least {costRatioLabel(asset.gate.minCostRatioBps)} what it would
-          unlock; evidence older than {Math.round(asset.gate.maxEvidenceAge / 60)} min counts as missing.{' '}
+          <GlossaryTerm term="cost-gate">Cost gate</GlossaryTerm>: keeps the policy rate while fresh evidence says moving the price costs at least{' '}
+          {costRatioLabel(asset.gate.minCostRatioBps)} what it would unlock; evidence older than {Math.round(asset.gate.maxEvidenceAge / 60)} min counts as
+          missing.{' '}
           {asset.evidence ? (
             <>
-              Last evidence ({evidenceAge !== undefined ? ago(toIso(asset.evidence.timestamp)) : 'unknown'}): pushing up costs{' '}
-              {usd(fixedToNumber(asset.evidence.upCost, decimals))} against {usd(fixedToNumber(asset.evidence.upExposure, decimals))} it would unlock; down costs{' '}
-              {usd(fixedToNumber(asset.evidence.downCost, decimals))} against {usd(fixedToNumber(asset.evidence.downExposure, decimals))}.
+              Last <GlossaryTerm term="evidence">evidence</GlossaryTerm> ({evidenceAge !== undefined ? ago(toIso(asset.evidence.timestamp)) : 'unknown'}):
+              pushing up costs {usd(fixedToNumber(asset.evidence.upCost, decimals))} against{' '}
+              {usd(fixedToNumber(asset.evidence.upExposure, decimals))} it would unlock; down costs {usd(fixedToNumber(asset.evidence.downCost, decimals))}{' '}
+              against {usd(fixedToNumber(asset.evidence.downExposure, decimals))}.
             </>
           ) : (
             'No evidence has been published yet.'
@@ -162,6 +179,13 @@ export function OracleStatusPage() {
         <div className="banner" role="status">
           Showing the status bundled with this build, from {dateTime(toIso(status.at))}. The live report could not be
           reached{liveError ? ` (${liveError})` : ''}.
+        </div>
+      )}
+
+      {isStatusStale(status, now) && (
+        <div className="banner" data-severity="warn" role="alert">
+          This report is {ago(toIso(status.at))}. The keeper may have stopped running; nothing below is more recent than
+          that.
         </div>
       )}
 
