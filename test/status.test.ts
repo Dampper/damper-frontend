@@ -3,7 +3,18 @@ import { describe, expect, it } from 'vitest';
 import { parseOracleStatus } from '../src/oracleStatus';
 import { ReportError } from '../src/report';
 import { loadStatus } from '../src/statusData';
-import { anchorAgeSecs, costRatioLabel, fixedToNumber, isTightened, rateLabel, rateSummary, worstSeverity } from '../src/oracleDerive';
+import {
+  STALE_STATUS_SECS,
+  anchorAgeSecs,
+  costRatioLabel,
+  fixedToNumber,
+  isStatusStale,
+  isTightened,
+  rateLabel,
+  rateSummary,
+  statusAgeSecs,
+  worstSeverity,
+} from '../src/oracleDerive';
 
 const raw = JSON.parse(readFileSync('public/data/oracle-status.json', 'utf8'));
 const status = parseOracleStatus(raw);
@@ -139,5 +150,26 @@ describe('worstSeverity', () => {
   it('is the most severe alert across every asset, or undefined when none fired', () => {
     expect(worstSeverity({ at: 0, network: 'x', oracle: 'x', assets: [{ ...status.assets[0]!, alerts: [{ severity: 'info', code: 'a', message: 'm' }] }, { ...status.assets[0]!, alerts: [{ severity: 'critical', code: 'b', message: 'm' }] }] })).toBe('critical');
     expect(worstSeverity({ at: 0, network: 'x', oracle: 'x', assets: [{ ...status.assets[0]!, alerts: [] }] })).toBeUndefined();
+  });
+});
+
+describe('statusAgeSecs / isStatusStale (#10)', () => {
+  const at = { at: 1_000_000, network: 'x', oracle: 'x', assets: [] } as const;
+
+  it('is the gap between now and the report time, never negative', () => {
+    expect(statusAgeSecs(at, 1_000_500)).toBe(500);
+    expect(statusAgeSecs(at, 1_000_000)).toBe(0);
+    expect(statusAgeSecs(at, 999_000)).toBe(0); // a report that claims to be from the future
+  });
+
+  it('is not stale at or before the default 15-minute threshold, stale just after it', () => {
+    expect(isStatusStale(at, at.at + STALE_STATUS_SECS)).toBe(false);
+    expect(isStatusStale(at, at.at + STALE_STATUS_SECS + 1)).toBe(true);
+    expect(isStatusStale(at, at.at)).toBe(false);
+  });
+
+  it('honours a custom threshold', () => {
+    expect(isStatusStale(at, at.at + 100, 50)).toBe(true);
+    expect(isStatusStale(at, at.at + 100, 200)).toBe(false);
   });
 });

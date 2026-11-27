@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ago, dateTime, price, usd } from '../format';
-import { anchorAgeSecs, costRatioLabel, evidenceAgeSecs, fixedToNumber, isTightened, rateSummary } from '../oracleDerive';
+import { anchorAgeSecs, costRatioLabel, evidenceAgeSecs, fixedToNumber, isStatusStale, isTightened, rateSummary } from '../oracleDerive';
 import { loadStatus, type LoadedStatus } from '../statusData';
 import type { AssetStatus, OracleStatus } from '../types';
 import { AlertList } from './AlertList';
@@ -162,6 +162,13 @@ export function OracleStatusPage() {
         <div className="banner" role="status">
           Showing the status bundled with this build, from {dateTime(toIso(status.at))}. The live report could not be
           reached{liveError ? ` (${liveError})` : ''}.
+        </div>
+      )}
+
+      {isStatusStale(status, now) && (
+        <div className="banner" data-severity="warn" role="alert">
+          This report is {ago(toIso(status.at))}. The keeper may have stopped running; nothing below is more recent than
+          that.
         </div>
       )}
 

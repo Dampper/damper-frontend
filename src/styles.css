@@ -239,6 +239,9 @@ p {
   color: var(--text-secondary);
   font-size: 14px;
 }
+.banner[data-severity='warn'] {
+  border-left-color: var(--tier-critical);
+}
 
 /* ------------------------------------------------------------ KPI tiles */
 
