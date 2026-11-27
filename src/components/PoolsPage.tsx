@@ -13,7 +13,8 @@ export function PoolsPage({ report }: { report: Report }) {
   const filter: Filter = route.page === 'pools' ? route.filter : 'all';
   const setFilter = (next: Filter) => navigate(href.pools(next));
   const sum = summarise(report);
-  const pools = visiblePools(report, filter);
+  const pools = visiblePools(report, filter, sort, query);
+  const searching = query.trim() !== '';
   const notable = findings(report);
 
   return (
@@ -46,6 +47,14 @@ export function PoolsPage({ report }: { report: Report }) {
       <div className="card">
         <div className="filters">
           <h2 style={{ marginRight: 'auto' }}>Pools</h2>
+          <input
+            type="search"
+            className="search"
+            aria-label="Search pools by name or asset"
+            placeholder="Search name or asset"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
           <div className="segmented" role="group" aria-label="Which pools to show">
             <button type="button" aria-pressed={filter === 'all'} onClick={() => setFilter('all')}>
               All ({report.pools.length})
@@ -58,19 +67,21 @@ export function PoolsPage({ report }: { report: Report }) {
 
         {pools.length === 0 ? (
           <p className="muted" style={{ padding: '16px 0' }}>
-            No pool allows borrowing right now.
+            {searching
+              ? `No pool matches \u201c${query.trim()}\u201d${filter === 'open' ? ' among those open for borrowing' : ''}.`
+              : 'No pool allows borrowing right now.'}
           </p>
         ) : (
           <div className="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th>Pool</th>
-                  <th>Status</th>
-                  <th className="r">Supplied</th>
-                  <th className="r">Borrowed</th>
+                  <SortHeader label="Pool" column="name" sort={sort} onSort={setSort} />
+                  <SortHeader label="Status" column="status" sort={sort} onSort={setSort} />
+                  <SortHeader label="Supplied" column="supply" sort={sort} onSort={setSort} className="r" />
+                  <SortHeader label="Borrowed" column="borrowed" sort={sort} onSort={setSort} className="r" />
                   <th className="hide-sm">Price sources</th>
-                  <th>Highest tier</th>
+                  <SortHeader label="Highest tier" column="tier" sort={sort} onSort={setSort} />
                 </tr>
               </thead>
               <tbody>
@@ -155,5 +166,32 @@ export function PoolsPage({ report }: { report: Report }) {
         </details>
       )}
     </div>
+  );
+}
+
+/** A column header that sorts by its column; `aria-sort` marks the active one. The button makes it work from the keyboard. */
+function SortHeader({
+  label,
+  column,
+  sort,
+  onSort,
+  className,
+}: {
+  label: string;
+  column: SortKey;
+  sort: Sort;
+  onSort: (next: Sort) => void;
+  className?: string;
+}) {
+  const active = sort.key === column;
+  return (
+    <th className={className} aria-sort={active ? (sort.dir === 'asc' ? 'ascending' : 'descending') : undefined}>
+      <button type="button" className="sort" onClick={() => onSort(nextSort(sort, column))}>
+        {label}
+        <span aria-hidden="true" className="sort-mark">
+          {active ? (sort.dir === 'asc' ? '▲' : '▼') : ''}
+        </span>
+      </button>
+    </th>
   );
 }

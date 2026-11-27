@@ -3,6 +3,7 @@ import { loadReport, type Loaded } from './data';
 import { ago, dateTime } from './format';
 import { href, useRoute } from './router';
 import { useTheme } from './theme';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { Mark } from './components/icons';
 import { MethodPage } from './components/MethodPage';
 import { OracleStatusPage } from './components/OracleStatusPage';
@@ -55,6 +56,7 @@ export function App() {
       </header>
 
       <main>
+        <ErrorBoundary key={route.page === 'pool' ? `pool/${route.id}` : route.page}>
         {route.page === 'method' ? (
           <MethodPage />
         ) : route.page === 'status' ? (
@@ -95,6 +97,7 @@ export function App() {
             )}
           </>
         )}
+        </ErrorBoundary>
       </main>
 
       <footer className="footer">

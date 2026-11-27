@@ -1,4 +1,6 @@
+import { poolCsv, poolCsvFilename } from '../csv';
 import { plotRows } from '../derive';
+import { downloadText } from '../download';
 import { percent, price, shortId, usd } from '../format';
 import { href } from '../router';
 import type { Pool } from '../types';
@@ -31,6 +33,9 @@ export function PoolPage({ pool }: { pool: Pool }) {
           <span>
             Oracle <CopyId id={pool.oracle} />
           </span>
+          <button type="button" className="ghost" onClick={() => downloadText(poolCsvFilename(pool), poolCsv(pool))}>
+            Download CSV
+          </button>
         </div>
       </div>
 
