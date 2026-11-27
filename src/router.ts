@@ -27,9 +27,15 @@ export function parseHash(hash: string): Route {
 export const href = {
   pools: (filter: Filter = 'all') => (filter === 'open' ? '#/?filter=open' : '#/'),
   pool: (id: string) => `#/pool/${id}`,
-  method: () => '#/method',
+  /** `term` scrolls the Method page's glossary to that entry on arrival (#20). */
+  method: (term?: string) => (term ? `#/method?term=${term}` : '#/method'),
   status: () => '#/status',
 };
+
+/** The `?key=value` query carried by the current hash, independent of which page it routes to. */
+export function hashQuery(hash: string = window.location.hash): URLSearchParams {
+  return new URLSearchParams(hash.split('?')[1] ?? '');
+}
 
 /**
  * Sets the hash and dispatches `hashchange` itself rather than trusting the browser (or

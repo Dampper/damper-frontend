@@ -638,6 +638,10 @@ details.table-view .table-wrap {
 .chip[data-severity='warn'] {
   border-color: var(--tier-medium);
 }
+.alert-response {
+  margin: 4px 0 0;
+  font-size: 13px;
+}
 
 /* ------------------------------------------------------------ method */
 
@@ -663,6 +667,24 @@ details.table-view .table-wrap {
   border-radius: 4px;
   padding: 0 5px;
   font-size: 13px;
+}
+
+.glossary {
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+.glossary > div {
+  display: grid;
+  gap: 2px;
+  scroll-margin-top: 16px;
+}
+.glossary dt {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.glossary dd {
+  margin: 0;
 }
 
 .footer {

@@ -4,6 +4,7 @@ import { href } from '../router';
 import type { Pool } from '../types';
 import { CopyId } from './CopyId';
 import { CostChart } from './CostChart';
+import { GlossaryTerm } from './GlossaryTerm';
 import { Kpi } from './Kpi';
 import { TierBadge } from './TierBadge';
 import { deviationGuard, sourceLabel } from './source';
@@ -56,7 +57,7 @@ export function PoolPage({ pool }: { pool: Pool }) {
                 <th className="r hide-sm">Borrowed</th>
                 <th>Price source</th>
                 <th className="hide-sm" title="The oracle aggregator rejects a price that moved more than this since the previous round">
-                  Deviation guard
+                  <GlossaryTerm term="deviation-guard">Deviation guard</GlossaryTerm>
                 </th>
               </tr>
             </thead>
@@ -85,9 +86,9 @@ export function PoolPage({ pool }: { pool: Pool }) {
       <div className="card">
         <h2>If the price of a collateral asset were pushed up</h2>
         <p className="lede">
-          An attacker posts the asset as collateral at the false price and borrows everything else. The dots compare the
-          capital needed to push the price up 10× with what the other reserves could lend. Where the orange dot is to the right
-          of the blue one, the prize is bigger than the cost.
+          An attacker posts the asset as collateral at the false price and borrows everything else. The dots compare the{' '}
+          <GlossaryTerm term="cost-to-move">capital needed to push the price up 10×</GlossaryTerm> with what the other reserves could lend (the{' '}
+          <GlossaryTerm term="exposure">exposure</GlossaryTerm>). Where the orange dot is to the right of the blue one, the prize is bigger than the cost.
         </p>
         <CostChart rows={plotRows(pool, 'collateral')} which="collateral" />
       </div>
