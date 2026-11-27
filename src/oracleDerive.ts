@@ -35,6 +35,17 @@ export function evidenceAgeSecs(asset: AssetStatus, now: number): number | undef
   return asset.evidence ? Math.max(0, now - asset.evidence.timestamp) : undefined;
 }
 
+/** A report older than this with nothing newer behind it likely means the keeper has stopped (ADR 0004). */
+export const STALE_STATUS_SECS = 15 * 60;
+
+export function statusAgeSecs(status: OracleStatus, now: number): number {
+  return Math.max(0, now - status.at);
+}
+
+export function isStatusStale(status: OracleStatus, now: number, thresholdSecs: number = STALE_STATUS_SECS): boolean {
+  return statusAgeSecs(status, now) > thresholdSecs;
+}
+
 export const SEVERITY_ORDER: Array<AssetStatus['alerts'][number]['severity']> = ['critical', 'warn', 'info'];
 export function severityRank(s: AssetStatus['alerts'][number]['severity']): number {
   return SEVERITY_ORDER.indexOf(s);

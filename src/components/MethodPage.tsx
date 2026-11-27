@@ -1,14 +1,45 @@
+import { useEffect } from 'react';
 import { TIER_MEANING, TIER_ORDER } from '../derive';
+import { hashQuery } from '../router';
+import { GLOSSARY, GLOSSARY_ORDER } from './glossary';
 import { TierBadge } from './TierBadge';
 
 const BACKEND = 'https://github.com/Dampper/damper-backend';
 
+/** Scrolls a glossary entry into view when the hash names one (`#/method?term=anchor`), on arrival and on a later jump while already here. */
+function useGlossaryScroll(): void {
+  useEffect(() => {
+    const jump = () => {
+      const term = hashQuery().get('term');
+      if (term) document.getElementById(`glossary-${term}`)?.scrollIntoView({ block: 'center' });
+    };
+    jump();
+    window.addEventListener('hashchange', jump);
+    return () => window.removeEventListener('hashchange', jump);
+  }, []);
+}
+
 export function MethodPage() {
+  useGlossaryScroll();
+
   return (
     <div className="stack">
       <div className="page-title">
         <h1>How it is measured</h1>
         <p>What the numbers mean, where they come from, and what they leave out.</p>
+      </div>
+
+      <div className="card prose">
+        <h2 id="glossary">Glossary</h2>
+        <p>Terms used across the dashboard, linked from where each first appears (#20).</p>
+        <dl className="glossary">
+          {GLOSSARY_ORDER.map((key) => (
+            <div key={key} id={`glossary-${key}`}>
+              <dt>{GLOSSARY[key].term}</dt>
+              <dd>{GLOSSARY[key].definition}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
 
       <div className="card prose">
